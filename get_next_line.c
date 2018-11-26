@@ -6,7 +6,7 @@
 /*   By: mkastaci <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/22 15:16:35 by mkastaci          #+#    #+#             */
-/*   Updated: 2018/11/22 16:55:16 by mkastaci         ###   ########.fr       */
+/*   Updated: 2018/11/26 19:19:29 by mkastaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,71 +17,102 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-char	*lirefichier(int fd, char *str)
+int		line_return(char **line, char **c, int ret)
 {
-	char	buff[BUFF_SIZE + 1];
-	int		ret;
+	char *tmp;
 
-	while ((ret = read(fd, buff, BUFF_SIZE)))
+	if (*c != NULL)
 	{
-		buff[ret] = '\0';
-		str = ft_strjoin(str, buff);
+		tmp = *line;
+		*line = (*line == NULL) ? ft_strdup(*c) : ft_strjoin(*line, *c);
+		if (*line != NULL)
+			free(tmp);
+		ft_strdel(c);
+		return (1);
 	}
-	return (str);
+	else
+	{
+		if (ret < 0)
+			return (-1);
+		else if (!*line)
+			return (0);
+		else if (ret == 0 && **line)
+			return (1);
+		return (ret);
+	}
+	return (0);
+}
+
+int		check_str(char **line, char **str)
+{
+	char *stop;
+	char *tmp;
+
+	stop = NULL;
+	if ((stop = ft_strchr(*str, '\n')) != NULL)
+	{
+		*line = ft_strsub(*str, 0, stop - *str);
+		tmp = *str;
+		*str = ft_strdup(stop + 1);
+		free(tmp);
+		return (1);
+	}
+	else
+	{
+		*line = ft_strdup(*str);
+		ft_strdel(str);
+		return (0);
+	}
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	static char *str;
-	int i;
-	int g;
+	static char *str = NULL;
+	char		buff[BUFF_SIZE + 1];
+	int			ret;
+	char		*tmp;
 
-	g = 0;
-	i = 0;
-	if (fd == -1 || line == NULL)
+	tmp = NULL;
+	if (!line || fd < 0 || BUFF_SIZE <= 0)
 		return (-1);
-	if (str == NULL)
+	*line = NULL;
+	if (str != NULL)
+		if (check_str(line, &str))
+			return (1);
+	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
 	{
-		if (!(str = (char*)malloc(sizeof(char) * (BUFF_SIZE + 1))))
-			return (-1);
+		buff[ret] = '\0';
+		if ((tmp = ft_strchr(buff, '\n')) != NULL)
+			break ;
+		tmp = *line;
+		*line = (*line == NULL) ? ft_strdup(buff) : ft_strjoin(*line, buff);
+		if (*line != NULL)
+			free(tmp);
 	}
-	str = lirefichier(fd, str);
-	if (str[i])
-	{
-		while (str[i] != '\n' && str[i] != '\n')
-			i++;
-		if (i == 0)
-			(*line) = ft_strdup("");
-		else
-		{
-			(*line) = ft_strsub(str, 0, i);
-			str = &str[i + 1];
-		}
-		printf("%s \n", line[g]);
-		g++;
-		return (1);
-	}
-	else
-		(*line) = ft_strdup("");
-	return (0);
+	str = (tmp && *tmp == '\n') ? ft_strdup(tmp + 1) : str;
+	tmp = (tmp && *tmp == '\n') ? ft_strsub(buff, 0, tmp - buff) : NULL;
+	return (line_return(line, &tmp, ret));
 }
 
-
+/*
 int main(int argc, char **argv)
 {
 	int		fd;
 	char	*line;
+	int ret;
 
 	line = NULL;
 	if (argc > 1)
 	{
 		fd = open(argv[1], O_RDONLY);
-		while (get_next_line(fd, &line) > 0)
+		while ((ret = get_next_line(fd, &line)) > 0)
 		{
+			printf("%s\n", line);
 			free(line);
 		}
 	}
 	else
 		write(2, "il manque largument\n", 19);
+	while (1);
 	return (0);
-}
+}*/
