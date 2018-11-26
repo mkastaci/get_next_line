@@ -6,7 +6,7 @@
 /*   By: mkastaci <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 19:21:10 by mkastaci          #+#    #+#             */
-/*   Updated: 2018/11/26 19:23:13 by mkastaci         ###   ########.fr       */
+/*   Updated: 2018/11/26 19:25:46 by mkastaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int main(int argc, char **argv)
 {
-	intfd;
-	char*line;
+	int		fd;
+	char	*line;
 	int ret;
 
 	line = NULL;
@@ -30,6 +30,5 @@ int main(int argc, char **argv)
 	}
 	else
 		write(2, "il manque largument\n", 19);
-	while (1);
 	return (0);
 }
