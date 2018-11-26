@@ -6,7 +6,7 @@
 /*   By: mkastaci <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/22 15:16:35 by mkastaci          #+#    #+#             */
-/*   Updated: 2018/11/26 19:19:29 by mkastaci         ###   ########.fr       */
+/*   Updated: 2018/11/26 19:22:54 by mkastaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,26 +93,3 @@ int		get_next_line(const int fd, char **line)
 	tmp = (tmp && *tmp == '\n') ? ft_strsub(buff, 0, tmp - buff) : NULL;
 	return (line_return(line, &tmp, ret));
 }
-
-/*
-int main(int argc, char **argv)
-{
-	int		fd;
-	char	*line;
-	int ret;
-
-	line = NULL;
-	if (argc > 1)
-	{
-		fd = open(argv[1], O_RDONLY);
-		while ((ret = get_next_line(fd, &line)) > 0)
-		{
-			printf("%s\n", line);
-			free(line);
-		}
-	}
-	else
-		write(2, "il manque largument\n", 19);
-	while (1);
-	return (0);
-}*/
