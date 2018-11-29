@@ -6,7 +6,7 @@
 /*   By: mkastaci <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/22 15:16:35 by mkastaci          #+#    #+#             */
-/*   Updated: 2018/11/26 19:22:54 by mkastaci         ###   ########.fr       */
+/*   Updated: 2018/11/29 17:59:39 by mkastaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,28 +68,27 @@ int		check_str(char **line, char **str)
 int		get_next_line(const int fd, char **line)
 {
 	static char *str = NULL;
-	char		buff[BUFF_SIZE + 1];
-	int			ret;
-	char		*tmp;
+	t_getlist	l;
 
-	tmp = NULL;
+	l.tmp = NULL;
 	if (!line || fd < 0 || BUFF_SIZE <= 0)
 		return (-1);
 	*line = NULL;
 	if (str != NULL)
 		if (check_str(line, &str))
 			return (1);
-	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
+	while ((l.ret = read(fd, l.buff, BUFF_SIZE)) > 0)
 	{
-		buff[ret] = '\0';
-		if ((tmp = ft_strchr(buff, '\n')) != NULL)
+		l.buff[l.ret] = '\0';
+		if ((l.tmp = ft_strchr(l.buff, '\n')) != NULL)
 			break ;
-		tmp = *line;
-		*line = (*line == NULL) ? ft_strdup(buff) : ft_strjoin(*line, buff);
+		l.tmp = *line;
+		*line = (*line == NULL) ? ft_strdup(l.buff) : ft_strjoin(*line, l.buff);
 		if (*line != NULL)
-			free(tmp);
+			free(l.tmp);
 	}
-	str = (tmp && *tmp == '\n') ? ft_strdup(tmp + 1) : str;
-	tmp = (tmp && *tmp == '\n') ? ft_strsub(buff, 0, tmp - buff) : NULL;
-	return (line_return(line, &tmp, ret));
+	str = (l.tmp && *l.tmp == '\n') ? ft_strdup(l.tmp + 1) : str;
+	l.tmp = (l.tmp && *l.tmp == '\n') ?
+		ft_strsub(l.buff, 0, l.tmp - l.buff) : NULL;
+	return (line_return(line, &l.tmp, l.ret));
 }

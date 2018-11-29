@@ -6,7 +6,7 @@
 /*   By: mkastaci <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/22 15:21:06 by mkastaci          #+#    #+#             */
-/*   Updated: 2018/11/26 16:03:39 by mkastaci         ###   ########.fr       */
+/*   Updated: 2018/11/29 17:58:49 by mkastaci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,12 @@
 
 # define BUFF_SIZE 32
 
-int		get_next_line(const int fd, char **line);
+typedef struct		s_getlist
+{
+	char			buff[BUFF_SIZE + 1];
+	int				ret;
+	char			*tmp;
+}					t_getlist;
+
+int					get_next_line(const int fd, char **line);
 #endif
